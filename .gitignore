@@ -1,0 +1,4 @@
+.direnv
+esp-idf/build
+.platformio
+pio-esp32s3/.pio
