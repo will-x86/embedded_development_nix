@@ -39,7 +39,7 @@
           bear
         ];
         shellHook = ''
-          export PLATFORMIO_CORE_DIR=$PWD/.platformio
+          #export PLATFORMIO_CORE_DIR=$PWD/.platformio
         '';
       };
     };
