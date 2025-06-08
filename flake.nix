@@ -37,9 +37,26 @@
           #customPython
           #esptool
           bear
+          arduino-language-server # requirement by Arduino-Nvim
+          lua51Packages.dkjson# requirement by Arduino-Nvim
+          arduino-cli # requirement by Arduino-Nvim
+          libudev-zero
+          picotool
+# arduino-cli config init
+#arduino-cli core update-index
+#arduino-cli core install arduino:avr
+          clang-tools # requirement by Arduino-Nvim
         ];
         shellHook = ''
-          #export PLATFORMIO_CORE_DIR=$PWD/.platformio
+    if [ ! -f ~/.arduino15/arduino-cli.yaml ]; then
+      arduino-cli config init
+    fi
+    
+    # Update cores if needed
+    #arduino-cli core update-index
+    
+    echo "Arduino development environment ready!"WD/.platformio
+        export LD_LIBRARY_PATH="${pkgs.libudev-zero}/lib:${pkgs.systemd}/lib:$LD_LIBRARY_PATH"
         '';
       };
     };
