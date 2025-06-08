@@ -1,6 +1,17 @@
-# Purpose of this project
+# 🛠 Embedded Dev with Nix, Neovim, and Flakes
 
-To code, flash, etc embedded projects without having to spend hours configuring nix ( love you nix )
+> **Purpose**: Code, flash, and debug embedded projects *without spending hours configuring nix* (love you nix)
+
+
+---
+
+## 📚 Contents
+
+1. [Global Config & Permissions](#global-config--permissions)
+2. [ESP-IDF (ESP32)](#esp-idf-esp32)
+3. [PlatformIO (ESP32S3)](#platformio-esp32s3)
+4. [Arduino Plugin + Boards](#arduino-plugin--boards)
+5. [Adafruit Feather RP2040 (USB Host)](#adafruit-feather-rp2040-usb-host)
 
 # Groups and non-flake settings:
 
@@ -163,6 +174,8 @@ So I'm using:
 You'll see there's a few requirements, the djjson, lsp, etcetc.
 
 ~~I won't go into too much detail, but set it up as the repo says, and set arduino_language_server up like this: ( at least for me ) ~~
+
+
 ~~```lua~~
 ~~ lspconfig.arduino_language_server.setup({~~
 ~~ capabilities = capabilities,~~
