@@ -400,3 +400,53 @@ Device 1: ID 0d62:910e  HP USB Business Slim Keyboard
 ```
 SHE WORKS !!!! 
 
+Now lets move onto the keyboard as that's what I wanted this for:
+
+
+
+https://learn.adafruit.com/using-a-keyboard-with-usb-host/arduino
+
+If you followed the previous guide, this is all setup, so we have to do very little:
+```
+mkdir adafruit_rp2040_keyboard
+cd adafruit_rp2040_keyboard
+touch adafruit_rp2040_keyboard.ino
+touch usbh_helper.h
+cp ../adafruit_rp2040/Makefile . 
+```
+Copy the files from the URL above 
+( I changed the baud rate from 115200 to 9600 in the main file ) 
+
+Then:
+```
+make compile 
+make upload
+arduino-cli monitor
+```
+
+Plug a keyboard into your ada feather-fruit then watch as your marvelous typing gets sent via serial:
+```
+
+Keys: O D J
+Modifiers: LEFT_SHIFT
+Keys: D J
+Modifiers: LEFT_SHIFT
+Keys: J
+Modifiers: LEFT_SHIFT
+Keys: J A
+Modifiers: LEFT_SHIFT
+Keys: A
+Modifiers: LEFT_SHIFT
+Keys: A S
+Modifiers: LEFT_SHIFT
+Keys: A S O
+Modifiers: LEFT_SHIFT
+Modifiers: LEFT_SHIFT
+Keys: A S O
+Keys: S O D
+Keys: O D
+Keys: D
+No keys pressed
+Vvk20k
+
+```
