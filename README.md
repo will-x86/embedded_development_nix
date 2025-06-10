@@ -1,7 +1,6 @@
 # 🛠 Embedded Dev with Nix, Neovim, and Flakes
 
-> **Purpose**: Code, flash, and debug embedded projects *without spending hours configuring nix* (love you nix)
-
+> **Purpose**: Code, flash, and debug embedded projects _without spending hours configuring nix_ (love you nix)
 
 ---
 
@@ -175,7 +174,6 @@ You'll see there's a few requirements, the djjson, lsp, etcetc.
 
 ~~I won't go into too much detail, but set it up as the repo says, and set arduino_language_server up like this: ( at least for me ) ~~
 
-
 ~~```lua~~
 ~~ lspconfig.arduino_language_server.setup({~~
 ~~ capabilities = capabilities,~~
@@ -266,16 +264,17 @@ Name: "Adafruit TinyUSB Library"
   Author: Adafruit
   Maintainer: Adafruit <info@adafruit.com>
   Sentence: TinyUSB library for Arduino
-......... Etc etc 
+......... Etc etc
 ```
 
-
 Install via:
+
 ```
 arduino-cli lib install "Adafruit TinyUSB Library"@2.1.0                                                                                                                                                                                                     main     
 ```
 
 Same again, search for pio USB:
+
 ```
 arduino-cli lib search "Pio USB"                                                                                      main     
 Name: "Pico PIO USB"
@@ -284,22 +283,25 @@ Name: "Pico PIO USB"
 ```
 
 Install:
+
 ```
 arduino-cli lib install "Pico PIO USB"                                                                                      main     
 ```
 
 Then I ran a uh:
+
 ```
 arduino-cli lib upgrade
 ```
 
+Now gotta select the board, I had to install the board manager for RP2040 etc via: ( https://learn.adafruit.com/adafruit-feather-rp2040-with-usb-type-a-host/arduino-ide-setup )
 
-Now gotta select the board, I had to install the board manager for RP2040 etc via: ( https://learn.adafruit.com/adafruit-feather-rp2040-with-usb-type-a-host/arduino-ide-setup ) 
 ```
 arduino-cli config add board_manager.additional_urls https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json
 ```
 
 Then run:
+
 ```
 arduino-cli core update-index                                                                                         main     
 
@@ -310,35 +312,38 @@ Downloading index: package_index.tar.bz2 dow
 ```
 
 I also did a cheeky:
+
 ```
 arduino-cli core install rp2040:rp2040                                                                               
 ```
 
 Then after we list our boards via:
+
 ```
  arduino-cli board listall  | grep adafruit
- ```
+```
 
 We can find the:
- Adafruit Feather RP2040 USB Host     rp2040:rp2040:adafruit_feather_usb_host
+Adafruit Feather RP2040 USB Host rp2040:rp2040:adafruit_feather_usb_host
 
 Now, via neovim we press <Leader>ab and search for our board, once that's done, our board should be selected!
 
 I tried to compile but had some issues, so I added this to the flake.nix:
+
 ```
 libudev-zero
 export LD_LIBRARY_PATH="${pkgs.libudev-zero}/lib:${pkgs.systemd}/lib:$LD_LIBRARY_PATH"
 ```
 
-( It's already in there, no need for you to do it ) 
+( It's already in there, no need for you to do it )
 
-
-I also added picotool to the flake.nix here, but that's alr done 
+I also added picotool to the flake.nix here, but that's alr done
 
 I made the makefile in adafruit_rp2040/Makefile as the built in cmopiler and builder for the neovim plugin doesn't allow for our custom usbstack compile command we have
 
 make upload and make compile work!
 MUST BE IN BOOTLOADER MODE
+
 ```
 embedded_development_nix/adafruit_rp2040 ❯ make upload                                                                                                          main     
 arduino-cli upload --fqbn rp2040:rp2040:adafruit_feather_usb_host:freq=120,usbstack=tinyusb .
@@ -352,9 +357,10 @@ Wrote 119296 bytes to /var/run/media/will/RPI-RP2/NEW.UF2
 New upload port: /dev/ttyACM0 (serial)
 ```
 
-At this point I copied the example code, then went to the git repo to get usbh_helper.h and compiled again ( via `make compile` and `make upload` ) 
+At this point I copied the example code, then went to the git repo to get usbh_helper.h and compiled again ( via `make compile` and `make upload` )
 
-IT WORKED. 
+IT WORKED.
+
 ```
 ashing /run/media/will/RPI-RP2 (RPI-RP2)
 Wrote 223744 bytes to /run/media/will/RPI-RP2/NEW.UF2
@@ -364,6 +370,7 @@ New upload port: /dev/ttyACM0 (serial)
 ```
 
 After a cheeky monitor command and plugging in my keyboard:
+
 ```
 
 embedded_development_nix/adafruit_rp2040 ❯ arduino-cli monitor                                                                                                  main     
@@ -398,33 +405,36 @@ Device Descriptor:
   bNumConfigurations  1
 Device 1: ID 0d62:910e  HP USB Business Slim Keyboard
 ```
-SHE WORKS !!!! 
+
+SHE WORKS !!!!
 
 Now lets move onto the keyboard as that's what I wanted this for:
-
-
 
 https://learn.adafruit.com/using-a-keyboard-with-usb-host/arduino
 
 If you followed the previous guide, this is all setup, so we have to do very little:
+
 ```
 mkdir adafruit_rp2040_keyboard
 cd adafruit_rp2040_keyboard
 touch adafruit_rp2040_keyboard.ino
 touch usbh_helper.h
-cp ../adafruit_rp2040/Makefile . 
+cp ../adafruit_rp2040/Makefile .
 ```
-Copy the files from the URL above 
-( I changed the baud rate from 115200 to 9600 in the main file ) 
+
+Copy the files from the URL above
+( I changed the baud rate from 115200 to 9600 in the main file )
 
 Then:
+
 ```
-make compile 
+make compile
 make upload
 arduino-cli monitor
 ```
 
 Plug a keyboard into your ada feather-fruit then watch as your marvelous typing gets sent via serial:
+
 ```
 
 Keys: O D J
@@ -450,3 +460,63 @@ No keys pressed
 Vvk20k
 
 ```
+
+# ESPIDF with working lsp (clangd) Neovim
+
+Man I hate esp idf.
+
+Every single fix for random LSP errors always says the same thing
+"Hard code your clang command"
+What if I want to update my system ?
+What if I want to use clangd for other c++ projects?
+
+I have a fix !
+Set your .clangd to:
+
+```
+CompileCommandsDir: build
+CompileFlags:
+  Remove: [-fno-tree-switch-conversion, -fno-shrink-wrap, -mtext-section-literals, -mlongcalls, -fstrict-volatile-bitfields, -march=rv32imac_zicsr_zifencei]
+```
+
+Install esp-idf from the flake.nix ( it's already done )
+
+Then _make sure_ you've got this in your flake.nix ( I have done it already here)
+
+```sh
+export CLANGD_IDF_PATH=$(which clangd)
+```
+
+Then in your neovim configuration:
+
+```lua
+			local esp_idf_path = os.getenv("IDF_PATH")
+			local clangd_nix = os.getenv("CLANGD_IDF_PATH")
+			if esp_idf_path then
+				-- for esp-idf
+				require("lspconfig").clangd.setup({
+					-- handlers = handlers,
+					capabilities = capabilities,
+					cmd = { clangd_nix, "--background-index", "--query-driver=**" },
+					root_dir = function()
+						-- leave empty to stop nvim from cd'ing into ~/ due to global .clangd file
+					end,
+				})
+			else
+				-- clangd config
+				require("lspconfig").clangd.setup({
+					-- cmd = { 'clangd', "--background-index", "--clang-tidy"},
+					handlers = {
+						["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
+							disable = { "cpp copyright" },
+						}),
+					},
+				})
+			end
+```
+
+Basically, use clangd_idf only if idf exists !
+
+And badabing badaboom ! ( idf.py fullclean && idf.py build )
+
+Your lsp works with no "could not find stdio.h" etc errors

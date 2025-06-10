@@ -1,0 +1,2 @@
+idf.py menuconfig 
+Component config 

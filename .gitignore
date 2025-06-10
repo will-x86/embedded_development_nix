@@ -1,4 +1,7 @@
 .direnv
-esp-idf/build
 .platformio
-pio-esp32s3/.pio
+.pio
+.cache
+.clangd
+managed_components
+build
